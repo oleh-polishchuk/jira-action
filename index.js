@@ -37,7 +37,8 @@ export async function run() {
 
         const response = await axios(config)
 
-        core.setOutput("response", response);
+        console.log(`==> response: ${response}`);
+
         const payload = JSON.stringify(github.context.payload, undefined, 2)
         console.log(`==> The event payload: ${payload}`);
     } catch (error) {
