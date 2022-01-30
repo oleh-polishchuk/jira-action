@@ -11577,6 +11577,7 @@ const util = __nccwpck_require__(3837);
 
 async function run() {
     try {
+        const githubToken = core.getInput('github-personal-access-token');
         const username = core.getInput('atlassian-basic-auth-username');
         const password = core.getInput('atlassian-basic-auth-password');
 
@@ -11606,11 +11607,19 @@ async function run() {
             data : data
         };
 
-        console.log('==> github.event:', util.inspect(github.event, false, 2, true));
+        console.log('==> github.event:', util.inspect(github.context, false, 2, true));
 
-        const response = await axios(config)
+        const { number: prNumber } = github.context.payload.pull_request;
+        const octokit = new github.GitHub(githubToken);
+        const res = await octokit.rest.pulls.get({
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            pull_number: prNumber,
+        });
 
-        console.log(`==> response: ${JSON.stringify(response, undefined, 2)}`);
+        console.log('==> res:', util.inspect(res, false, 2, true));
+
+        await axios(config)
 
         const payload = JSON.stringify(github.context.payload, undefined, 2)
         console.log(`==> The event payload: ${payload}`);
