@@ -33,7 +33,7 @@ export async function run() {
             data : data
         };
 
-        console.log('==> github.event.issue.pull_request:', JSON.stringify(github.event.issue.pull_request, undefined, 2));
+        console.log('==> github.event:', JSON.stringify(github.event, undefined, 2));
 
         const response = await axios(config)
 
