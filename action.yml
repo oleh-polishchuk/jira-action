@@ -1,13 +1,29 @@
 name: 'Hello World'
+author: 'Oleh Polishchuk'
 description: 'Greet someone and record the time'
+
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  atlassian-basic-auth-username:
+    description: 'Email as the username for your Atlassian account'
     required: true
-    default: 'World'
-outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+
+  atlassian-basic-auth-password:
+    description: 'API token as the password for your Atlassian account'
+    required: true
+
+  pattern-to-match:
+    description: 'Condition regular expression'
+    required: false
+    default: 'https:\/\/[a-z]+.atlassian.net\/browse\/(\w{1,4}-\d{1,4})'
+
+  on-success-transition-id:
+    description: 'Use this transition id when pattern match'
+    required: true
+
+  on-fail-transition-id:
+    description: 'User this transition id when pattern does not match'
+    required: true
+
 runs:
   using: 'node16'
   main: 'dist/index.js'
