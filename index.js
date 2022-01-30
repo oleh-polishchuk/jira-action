@@ -35,7 +35,7 @@ export async function run() {
         const body = github.context.payload.pull_request.body;
         const regex = new RegExp(pattern, 'gm');
         const res = regex.exec(body);
-        if (Boolean(res) && res.groups.issue) {
+        if (res && res.groups && res.groups.issue) {
             const transitionId = core.getInput('on-success-transition-id');
             await transitIssue(res.groups.issue, transitionId);
         } else {
