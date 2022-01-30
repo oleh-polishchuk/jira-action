@@ -32,7 +32,7 @@ export async function run() {
 
         const pattern = core.getInput('pattern-to-match');
 
-        const body = github.context.pull_request.body;
+        const body = github.context.payload.pull_request.body;
         const regex = new RegExp(pattern, 'gm');
         const res = regex.exec(body);
         if (Boolean(res) && res.groups.issue) {
