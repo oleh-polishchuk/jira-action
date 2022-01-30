@@ -11605,17 +11605,12 @@ async function run() {
         const pattern = core.getInput('pattern-to-match');
 
         const body = github.context.payload.pull_request.body;
-        console.log('==> body', body);
         const regex = new RegExp(pattern, 'gm');
-        console.log('==> regex', regex);
         const res = regex.exec(body);
-        console.log('==> res', res);
         if (res && res.groups && res.groups.issue) {
             const transitionId = core.getInput('on-success-transition-id');
             await transitIssue(res.groups.issue, transitionId);
         } else {
-            const transitionId = core.getInput('on-fail-transition-id');
-            await transitIssue(res.groups.issue, transitionId);
             core.setFailed("Jira issue url is required");
         }
     } catch (error) {
