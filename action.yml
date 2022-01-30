@@ -1,6 +1,6 @@
-name: 'Hello World'
+name: 'Transit Jira issue'
 author: 'Oleh Polishchuk'
-description: 'Greet someone and record the time'
+description: 'Move Jira issue in code review'
 
 inputs:
   atlassian-basic-auth-username:
