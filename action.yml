@@ -3,10 +3,6 @@ author: 'Oleh Polishchuk'
 description: 'Greet someone and record the time'
 
 inputs:
-  github-personal-access-token:
-    description: 'Token that can be used to access the GitHub API'
-    required: true
-
   atlassian-basic-auth-username:
     description: 'Email as the username for your Atlassian account'
     required: true

@@ -11575,54 +11575,46 @@ const core = __nccwpck_require__(6687);
 const github = __nccwpck_require__(8186);
 const util = __nccwpck_require__(3837);
 
+const transitIssue = async (issueCode, transitionId) => {
+    const username = core.getInput('atlassian-basic-auth-username');
+    const password = core.getInput('atlassian-basic-auth-password');
+
+    const data = JSON.stringify({
+        "transition": {
+            "id": transitionId
+        }
+    });
+
+    const config = {
+        method: 'post',
+        url: `https://buyinglabs.atlassian.net/rest/api/latest/issue/${issueCode}/transitions`,
+        headers: {
+            'Authorization': `Basic ${Buffer.from(username + ':' + password).toString('base64')}`,
+            'Content-Type': 'application/json'
+        },
+        data : data
+    };
+
+    return axios(config);
+}
+
 async function run() {
     try {
-        const githubToken = core.getInput('github-personal-access-token');
-        const username = core.getInput('atlassian-basic-auth-username');
-        const password = core.getInput('atlassian-basic-auth-password');
-
-        const onSuccessTransitionId = core.getInput('on-success-transition-id');
-        const onFailTransitionId = core.getInput('on-fail-transition-id');
-
-        console.log(`==> username: ${username}`);
-        console.log(`==> password: ${password}`);
-        console.log(`==> onSuccessTransitionId: ${onSuccessTransitionId}`);
-        console.log(`==> onFailTransitionId: ${onFailTransitionId}`);
-
-        const data = JSON.stringify({
-            "transition": {
-                "id": onSuccessTransitionId
-            }
-        });
-
-        console.log(`==> data: ${data}`);
-
-        const config = {
-            method: 'post',
-            url: 'https://buyinglabs.atlassian.net/rest/api/latest/issue/BP-9691/transitions',
-            headers: {
-                'Authorization': `Basic ${Buffer.from(username + ':' + password).toString('base64')}`,
-                'Content-Type': 'application/json'
-            },
-            data : data
-        };
-
         console.log('==> github.event:', util.inspect(github.context, false, 2, true));
 
-        const { number: prNumber } = github.context.payload.pull_request;
-        const octokit = new github.GitHub(githubToken);
-        const res = await octokit.rest.pulls.get({
-            owner: github.context.repo.owner,
-            repo: github.context.repo.repo,
-            pull_number: prNumber,
-        });
+        const pattern = core.getInput('pattern-to-match');
 
-        console.log('==> res:', util.inspect(res, false, 2, true));
-
-        await axios(config)
-
-        const payload = JSON.stringify(github.context.payload, undefined, 2)
-        console.log(`==> The event payload: ${payload}`);
+        const body = github.context.pull_request.body;
+        const regex = new RegExp(pattern, 'gm');
+        const res = regex.exec(body);
+        if (Boolean(res) && res.groups.issue) {
+            const transitionId = core.getInput('on-success-transition-id');
+            await transitIssue(res.groups.issue, transitionId);
+        } else {
+            const transitionId = core.getInput('on-fail-transition-id');
+            await transitIssue(res.groups.issue, transitionId);
+            core.setFailed("Jira issue url is required");
+        }
     } catch (error) {
         core.setFailed(error.message);
     }
