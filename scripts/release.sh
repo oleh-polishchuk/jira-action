@@ -6,6 +6,6 @@ npm run build:cleanup
 
 git add .
 git commit -m 'Update package'
-git tag -a -m 'My first action release' v1.4
+git tag -a -m 'My first action release' v1.5
 git push --follow-tags
 git push
