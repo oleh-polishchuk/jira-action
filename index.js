@@ -1,6 +1,7 @@
 const axios = require('axios');
 const core = require('@actions/core');
 const github = require('@actions/github');
+const util = require('util');
 
 export async function run() {
     try {
@@ -33,7 +34,7 @@ export async function run() {
             data : data
         };
 
-        console.log('==> github.event:', JSON.stringify(github.event, undefined, 2));
+        console.log('==> github.event:', util.inspect(github.event, false, 2, true));
 
         const response = await axios(config)
 

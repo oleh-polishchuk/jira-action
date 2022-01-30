@@ -11573,6 +11573,7 @@ __nccwpck_require__.r(__webpack_exports__);
 const axios = __nccwpck_require__(3693);
 const core = __nccwpck_require__(6687);
 const github = __nccwpck_require__(8186);
+const util = __nccwpck_require__(3837);
 
 async function run() {
     try {
@@ -11605,7 +11606,7 @@ async function run() {
             data : data
         };
 
-        console.log('==> github.event:', JSON.stringify(github.event, undefined, 2));
+        console.log('==> github.event:', util.inspect(github.event, false, 2, true));
 
         const response = await axios(config)
 
